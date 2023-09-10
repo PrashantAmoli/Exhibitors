@@ -1,4 +1,5 @@
 import { stripe } from '@/utils/stripe';
+import { supabase } from '@/utils/supabase';
 import { buffer } from 'micro';
 
 export const config = {
@@ -27,36 +28,50 @@ export default async function handler(req, res) {
 
 	console.log('event', JSON.stringify(event, null, 2));
 
-	const order = {};
+	const transaction = {};
 
-	order.type = event.type;
-	order.livemode = event.data.object.livemode;
-	order.amount = event.data.object.amount_received;
-	order.currency = event.data.object.currency;
-	order.status = event.data.object.status;
-	order.metadata = event.data.object.metadata;
-	order.event_id = event.id;
+	transaction.event = event.type;
+	transaction.livemode = event.data.object.livemode;
+	transaction.amount = event.data.object.amount_received;
+	transaction.currency = event.data.object.currency;
+	transaction.event_id = event.id;
 
-	console.log('order', order);
+	const metadata = event.data.object.metadata;
+
+	transaction.first_name = metadata.first_name;
+	transaction.last_name = metadata.last_name;
+	transaction.email = metadata.email;
+	transaction.user_id = metadata?.user_id;
+	// TODO: Add order_id to metadata when orders are implemented
+	// transaction.order_id = metadata?.order_id;
+	transaction.json = event;
 
 	let paymentIntent;
 	// Handle the event
 	switch (event.type) {
 		case 'payment_intent.succeeded':
-			paymentIntent = event.data.object;
+			transaction.status = 'succeeded';
 			console.log('PaymentIntent was successful!');
 			break;
 		case 'payment_intent.payment_failed':
-			paymentIntent = event.data.object;
+			transaction.status = 'failed';
 			console.log('PaymentIntent failed!');
 			break;
 		case 'payment_intent.cancelled':
-			paymentIntent = event.data.object;
+			transaction.status = 'cancelled';
 			console.log('PaymentIntent was cancelled!');
 			break;
 		default:
 			console.log(`Unhandled event type ${event.type}`);
 	}
 
-	res.status(200).json({ received: true, event });
+	console.log('transaction', transaction);
+	const { data, error } = await supabase.from('transactions').insert([{ ...transaction }]);
+
+	if (error) {
+		console.log('error', error);
+		return res.status(500).json({ error });
+	}
+
+	res.status(200).json({ received: true, message: 'Successfully created transaction from Webhook' });
 }

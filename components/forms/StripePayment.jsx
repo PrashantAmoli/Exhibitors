@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { PaymentElement, AddressElement, LinkAuthenticationElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -14,8 +15,11 @@ const STRIPE_PAYMENT_INTENT_API = '/api/v1/payments/stripe/intent';
 export default function StripePayment() {
 	const [clientSecret, setClientSecret] = useState('');
 	const [amount, setAmount] = useState(100000);
+	const authData = useAuth();
+	const userData = useUser();
 
 	useEffect(() => {
+		console.log('Stripe Client Updated');
 		// Create PaymentIntent as soon as the page loads
 		fetch(STRIPE_PAYMENT_INTENT_API, {
 			method: 'POST',
@@ -23,13 +27,17 @@ export default function StripePayment() {
 			body: JSON.stringify({
 				amount: amount,
 				order: {
-					amount: 1000,
+					// amount will later be read-only and fetched from the orders table
+					amount: amount,
 				},
 				metadata: {
 					slot: '1',
-					email: 'abc@gmail.com',
-					phone: '1234567890',
-					name: 'abc',
+					first_name: userData.user.firstName,
+					last_name: userData.user.lastName,
+					user_id: userData.user.id,
+					email: userData.user.primaryEmailAddress.emailAddress,
+					// Order ID from the orders table
+					order_id: '1',
 				},
 			}),
 		})
@@ -46,13 +54,15 @@ export default function StripePayment() {
 	};
 
 	return (
-		<section className="w-full max-w-lg mx-auto my-3 overflow-y-auto">
-			{clientSecret && (
-				<Elements options={options} stripe={stripePromise}>
-					<StripePaymentForm amount={amount} setAmount={setAmount} />
-				</Elements>
-			)}
-		</section>
+		<>
+			<section className="w-full max-w-lg mx-auto my-3 overflow-y-auto">
+				{clientSecret && (
+					<Elements options={options} stripe={stripePromise}>
+						<StripePaymentForm amount={amount} setAmount={setAmount} />
+					</Elements>
+				)}
+			</section>
+		</>
 	);
 }
 

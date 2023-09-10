@@ -10,6 +10,9 @@ export const config = {
 export default async function handler(req, res) {
 	const sig = req.headers['stripe-signature'];
 	const payload = (await buffer(req)).toString();
+	console.log('req', req);
+	console.log('req.body', req?.body);
+	console.log('payload', payload);
 
 	if (payload && sig) console.log('payload and sig exist');
 
@@ -21,6 +24,20 @@ export default async function handler(req, res) {
 		console.log(err);
 		return res.status(400).send(`Webhook Error: ${err.message}`);
 	}
+
+	console.log('event', JSON.stringify(event, null, 2));
+
+	const order = {};
+
+	order.type = event.type;
+	order.livemode = event.data.object.livemode;
+	order.amount = event.data.object.amount_received;
+	order.currency = event.data.object.currency;
+	order.status = event.data.object.status;
+	order.metadata = event.data.object.metadata;
+	order.event_id = event.id;
+
+	console.log('order', order);
 
 	let paymentIntent;
 	// Handle the event

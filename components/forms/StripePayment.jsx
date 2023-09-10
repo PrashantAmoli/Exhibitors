@@ -13,6 +13,7 @@ const STRIPE_PAYMENT_INTENT_API = '/api/v1/payments/stripe/intent';
 
 export default function StripePayment() {
 	const [clientSecret, setClientSecret] = useState('');
+	const [amount, setAmount] = useState(100000);
 
 	useEffect(() => {
 		// Create PaymentIntent as soon as the page loads
@@ -20,7 +21,10 @@ export default function StripePayment() {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				items: [{ id: 'xl-tshirt' }],
+				amount: amount,
+				order: {
+					amount: 1000,
+				},
 				metadata: {
 					slot: '1',
 					email: 'abc@gmail.com',
@@ -31,7 +35,7 @@ export default function StripePayment() {
 		})
 			.then(res => res.json())
 			.then(data => setClientSecret(data.clientSecret));
-	}, []);
+	}, [amount]);
 
 	const appearance = {
 		theme: 'stripe',
@@ -45,14 +49,14 @@ export default function StripePayment() {
 		<section className="w-full max-w-lg mx-auto my-3 overflow-y-auto">
 			{clientSecret && (
 				<Elements options={options} stripe={stripePromise}>
-					<StripePaymentForm />
+					<StripePaymentForm amount={amount} setAmount={setAmount} />
 				</Elements>
 			)}
 		</section>
 	);
 }
 
-export function StripePaymentForm({ slot = 21 }) {
+export function StripePaymentForm({ slot = 21, amount, setAmount }) {
 	const stripe = useStripe();
 	const elements = useElements();
 	const [formData, setFormData] = useState({ slot: slot });
@@ -103,13 +107,6 @@ export function StripePaymentForm({ slot = 21 }) {
 				return;
 			}
 
-			if (!addressObject?.complete) {
-				alert('Please fill in your address');
-				return;
-			}
-
-			const address = addressObject.value;
-
 			setIsLoading(true);
 
 			console.log(elements);
@@ -141,127 +138,47 @@ export function StripePaymentForm({ slot = 21 }) {
 
 	const paymentElementOptions = {
 		layout: 'tabs',
+		billingDetails: {
+			name: 'Jenny Rosen',
+			email: '',
+			phone: '',
+			address: {
+				city: '',
+				line1: '',
+				line2: '',
+				state: '',
+				postal_code: '',
+			},
+		},
 	};
 
 	return (
 		<>
 			<Card className="w-full max-w-xl mx-auto">
-				<CardHeader>Payment</CardHeader>
+				<CardHeader className="text-lg font-semibold text-center ">Payment</CardHeader>
 
 				<form id="payment-form" onSubmit={handleSubmit}>
 					<CardContent className="flex flex-col gap-5">
-						<div className="flex flex-col gap-3 p-3 border rounded-2xl">
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="first_name">
-									Slot
-								</Label>
-								<Input id="first_name" name="first_name" type="text" placeholder="John" value={slot} required={required} />
-							</div>
-
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="email">
-									Email
-								</Label>
-								<Input id="email" name="email" type="email" placeholder="team@company.com" required={required} />
-								<p className="text-xs text-muted-foreground">
-									NOTE: This email address will be used for all further processes and communication including email updates, payments, client portal
-									login(coming soon), etc. Please make sure this is the correct email address & use it for all future communication.
-								</p>
-							</div>
-						</div>
-
-						<div className="flex flex-col gap-3 p-3 border rounded-2xl">
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="first_name">
-									First Name
-								</Label>
-								<Input
-									id="first_name"
-									name="first_name"
-									type="text"
-									placeholder="John"
-									defaultValue={formData?.first_name || ''}
-									onChange={e => setFormData({ ...formData, first_name: e.target.value })}
-								/>
-							</div>
-
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="last_name">
-									Last Name
-								</Label>
-								<Input
-									id="last_name"
-									name="last_name"
-									type="text"
-									placeholder="Doe"
-									defaultValue={formData?.last_name || ''}
-									onChange={e => setFormData({ ...formData, last_name: e.target.value })}
-								/>
-							</div>
-
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="personal_email">
-									Personal Email
-								</Label>
-								<Input
-									id="personal_email"
-									name="personal_email"
-									type="email"
-									placeholder={formData?.first_name ? `${formData?.first_name}@gmail.com` : 'Your email'}
-									defaultValue={formData?.personal_email || ''}
-									onChange={e => setFormData({ ...formData, personal_email: e.target.value })}
-								/>
-							</div>
-
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="phone">
-									Phone no.
-								</Label>
-								<Input id="phone" name="phone" type="tel" placeholder="123-456-7890" required={required} />
-							</div>
-
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="position">
-									Position
-								</Label>
-								<Input
-									id="position"
-									name="position"
-									type="text"
-									placeholder="Position i.e. CEO, CMO, etc."
-									defaultValue={formData?.position || ''}
-									onChange={e => setFormData({ ...formData, position: e.target.value })}
-								/>
-							</div>
-						</div>
-
-						<div className="flex flex-col gap-3 p-3 border rounded-2xl">
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="company">
-									Company
-								</Label>
-								<Input id="company" name="company" type="text" placeholder="Company Name" required={required} />
-							</div>
-
-							<div className="flex flex-col w-full gap-1">
-								<Label className="capitalize" htmlFor="website">
-									website
-								</Label>
-								<Input id="website" name="website" type="url" placeholder="https://company.com" required={required} />
-							</div>
+						<div className="flex flex-col w-full gap-1">
+							<Label className="capitalize" htmlFor="website">
+								amount
+							</Label>
+							<Input
+								id="website"
+								name="website"
+								type="number"
+								placeholder="100000"
+								defaultValue={amount}
+								onChange={e => setAmount(e.target.value)}
+								required={required}
+							/>
 						</div>
 
 						{/* Stripe Payment Elements */}
-						<LinkAuthenticationElement
-							id="link-authentication-element"
-							onChange={e => {
-								console.log(e.value);
-								setEmail(e.value.email);
-							}}
-						/>
-						<PaymentElement id="payment-element" options={paymentElementOptions} />
+						<LinkAuthenticationElement />
+						<PaymentElement options={paymentElementOptions} />
 
-						<AddressElement
+						{/* <AddressElement
 							options={{
 								mode: 'billing',
 								fields: {
@@ -269,7 +186,7 @@ export function StripePaymentForm({ slot = 21 }) {
 								},
 							}}
 							onChange={e => setAddressObject(e)}
-						/>
+						/> */}
 					</CardContent>
 
 					<CardFooter className="flex flex-col gap-2">

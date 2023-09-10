@@ -15,7 +15,7 @@ export default function Home() {
 			<main className="w-full p-2">
 				<h1 className="text-center">Exhibitors Portal</h1>
 
-				<div className="container">
+				<div className="w-full">
 					<StripePayment />
 				</div>
 			</main>

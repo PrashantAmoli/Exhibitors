@@ -16,7 +16,7 @@ export const Footer = ({ children }) => {
 	return (
 		<>
 			<footer className="w-full px-2 py-3 text-sm text-center text-muted-foreground">
-				Copywrite &copy; 2023 EaseMyExpo | All Rights Reserved | Terms & Conditions | Privacy Policy | Contact Us | About Us
+				Copyright &copy; 2023 EaseMyExpo | All Rights Reserved | Terms & Conditions | Privacy Policy | Contact Us | About Us
 			</footer>
 		</>
 	);

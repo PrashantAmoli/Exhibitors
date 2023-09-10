@@ -116,8 +116,6 @@ const HBLFShows = ({ slotsData, exhibitionData }) => {
 				title={`Booking for slot ${slot}`}
 			>
 				<BookingForm slot={slot} exhibitionData={exhibitionData} slotsData={slotsData} />
-
-				<StripePayment slot={slot} exhibitionData={exhibitionData} slotsData={slotsData} />
 			</Modal>
 
 			<svg xmlns="http://www.w3.org/2000/svg" width="747" height="1308" fill="none" viewBox="0 0 747 1308">

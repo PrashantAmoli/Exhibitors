@@ -83,7 +83,7 @@ export default function Modal({ modalOpen, setModalOpen, slot, exhibitionData, s
 
 									{/* <BookingForm slot={slot} exhibitionData={exhibitionData} slotsData={slotsData} /> */}
 
-									<div className="grid grid-cols-1 gap-2 overflow-y-auto sm:grid-cols-2">{children}</div>
+									<div className="overflow-y-auto">{children}</div>
 
 									<div className="absolute z-20 top-2 right-2 backdrop-blur-md">
 										<button

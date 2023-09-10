@@ -112,6 +112,8 @@ export function StripePaymentForm({ slot = 21 }) {
 
 			setIsLoading(true);
 
+			console.log(elements);
+
 			const { error } = await stripe.confirmPayment({
 				elements,
 				confirmParams: {

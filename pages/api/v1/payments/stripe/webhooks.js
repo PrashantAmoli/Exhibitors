@@ -16,8 +16,7 @@ const updateSlotUsingOrder = async order => {
 			booked: true,
 			booked_by: order?.user_id,
 		})
-		.eq('id', order?.slot_id)
-		.select();
+		.eq('id', order?.slot_id);
 
 	if (slotUpdateError) {
 		console.error('slotUpdateError', slotUpdateError);
@@ -34,7 +33,8 @@ const updateOrderUsingTransaction = async transaction => {
 			paid_by: transaction?.user_id,
 			updated_at: new Date().toISOString(),
 		})
-		.eq('id', transaction?.order_id);
+		.eq('id', transaction?.order_id)
+		.select();
 
 	if (orderUpdateError) {
 		console.error('orderUpdateError', orderUpdateError);

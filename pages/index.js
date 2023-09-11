@@ -4,6 +4,7 @@ import Head from 'next/head';
 import StripePayment from '@/components/forms/StripePayment';
 import { SignedIn } from '@clerk/nextjs';
 import Inquiries from '@/components/elements/Inquirires';
+import { TransactionsTable } from '@/components/tables/TransactionsTable';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,6 +21,7 @@ export default function Home() {
 				<div className="w-full">
 					<SignedIn>
 						<Inquiries />
+						<TransactionsTable />
 					</SignedIn>
 				</div>
 			</main>

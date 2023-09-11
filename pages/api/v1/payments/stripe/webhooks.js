@@ -16,7 +16,8 @@ const updateSlotUsingOrder = async order => {
 			booked: true,
 			booked_by: order?.user_id,
 		})
-		.eq('id', order?.slot_id);
+		.eq('id', order?.slot_id)
+		.select();
 
 	if (slotUpdateError) {
 		console.error('slotUpdateError', slotUpdateError);
@@ -102,7 +103,10 @@ export default async function handler(req, res) {
 	}
 
 	console.log('transaction', transaction);
-	const { data, error } = await supabase.from('transactions').insert([{ ...transaction }]);
+	const { data, error } = await supabase
+		.from('transactions')
+		.insert([{ ...transaction }])
+		.select();
 
 	if (error) {
 		console.log('error', error);

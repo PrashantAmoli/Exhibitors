@@ -8,6 +8,41 @@ export const config = {
 	},
 };
 
+const updateSlotUsingOrder = async order => {
+	const { data: slotData, error: slotUpdateError } = await supabase
+		.from('slots')
+		.update({
+			status: 'booked',
+			booked: true,
+			booked_by: order?.user_id,
+		})
+		.eq('id', order?.slot_id);
+
+	if (slotUpdateError) {
+		console.error('slotUpdateError', slotUpdateError);
+		return;
+	}
+};
+
+const updateOrderUsingTransaction = async transaction => {
+	const { data: orderData, error: orderUpdateError } = await supabase
+		.from('orders')
+		.update({
+			status: 'paid',
+			transaction_id: transaction?.id,
+			paid_by: transaction?.user_id,
+			updated_at: new Date().toISOString(),
+		})
+		.eq('id', transaction?.order_id);
+
+	if (orderUpdateError) {
+		console.error('orderUpdateError', orderUpdateError);
+		return;
+	}
+
+	await updateSlotUsingOrder(orderData[0]);
+};
+
 export default async function handler(req, res) {
 	const sig = req.headers['stripe-signature'];
 	const payload = (await buffer(req)).toString();
@@ -43,7 +78,8 @@ export default async function handler(req, res) {
 	transaction.email = metadata.email;
 	transaction.user_id = metadata?.user_id;
 	// TODO: Add order_id to metadata when orders are implemented
-	// transaction.order_id = metadata?.order_id;
+	transaction.order_id = metadata?.order_id;
+	transaction.type = metadata?.type || 'unknown';
 	transaction.json = event;
 
 	let paymentIntent;
@@ -72,6 +108,8 @@ export default async function handler(req, res) {
 		console.log('error', error);
 		return res.status(500).json({ error });
 	}
+
+	if (event.type === 'payment_intent.succeeded') await updateOrderUsingTransaction(data[0]);
 
 	res.status(200).json({ received: true, message: 'Successfully created transaction from Webhook' });
 }

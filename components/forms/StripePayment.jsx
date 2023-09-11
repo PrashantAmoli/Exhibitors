@@ -12,11 +12,11 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 const STRIPE_PAYMENT_INTENT_API = '/api/v1/payments/stripe/intent';
 
-export default function StripePayment() {
+export default function StripePayment({ order }) {
 	const [clientSecret, setClientSecret] = useState('');
-	const [amount, setAmount] = useState(100000);
 	const authData = useAuth();
 	const userData = useUser();
+	const { amount } = order;
 
 	useEffect(() => {
 		console.log('Stripe Client Updated');
@@ -25,11 +25,7 @@ export default function StripePayment() {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				amount: amount,
-				order: {
-					// amount will later be read-only and fetched from the orders table
-					amount: amount,
-				},
+				amount: order.amount,
 				metadata: {
 					slot: '1',
 					first_name: userData.user.firstName,
@@ -37,7 +33,9 @@ export default function StripePayment() {
 					user_id: userData.user.id,
 					email: userData.user.primaryEmailAddress.emailAddress,
 					// Order ID from the orders table
-					order_id: '1',
+					order_id: order.id,
+					amount: order.amount,
+					type: order?.type,
 				},
 			}),
 		})
@@ -58,7 +56,7 @@ export default function StripePayment() {
 			<section className="w-full max-w-lg mx-auto my-3 overflow-y-auto">
 				{clientSecret && (
 					<Elements options={options} stripe={stripePromise}>
-						<StripePaymentForm amount={amount} setAmount={setAmount} />
+						<StripePaymentForm amount={amount} />
 					</Elements>
 				)}
 			</section>
@@ -165,25 +163,10 @@ export function StripePaymentForm({ slot = 21, amount, setAmount }) {
 	return (
 		<>
 			<Card className="w-full max-w-xl mx-auto">
-				<CardHeader className="text-lg font-semibold text-center ">Payment</CardHeader>
+				<CardHeader className="text-lg font-semibold text-center ">Pay {amount}</CardHeader>
 
 				<form id="payment-form" onSubmit={handleSubmit}>
 					<CardContent className="flex flex-col gap-5">
-						<div className="flex flex-col w-full gap-1">
-							<Label className="capitalize" htmlFor="website">
-								amount
-							</Label>
-							<Input
-								id="website"
-								name="website"
-								type="number"
-								placeholder="100000"
-								defaultValue={amount}
-								onChange={e => setAmount(e.target.value)}
-								required={required}
-							/>
-						</div>
-
 						{/* Stripe Payment Elements */}
 						<LinkAuthenticationElement />
 						<PaymentElement options={paymentElementOptions} />

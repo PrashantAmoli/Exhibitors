@@ -30,7 +30,7 @@ const Navbar = ({ children }) => {
 
 					<div className="flex gap-1">
 						<SignedIn>
-							<OrganizationSwitcher
+							{/* <OrganizationSwitcher
 								appearance={{
 									elements: {
 										organizationSwitcherPopoverActionButton: userData?.user?.publicMetadata?.role === 'superadmin' ? '' : 'disabled hidden ',
@@ -38,7 +38,7 @@ const Navbar = ({ children }) => {
 										organizationSwitcherTriggerIcon: 'text-black dark:text-white',
 									},
 								}}
-							/>
+							/> */}
 							<UserButton />
 						</SignedIn>
 

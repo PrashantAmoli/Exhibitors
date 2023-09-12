@@ -2,6 +2,8 @@ import { supabase } from '@/utils/supabase';
 import { useUser } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
 import PaymentButton from './PaymentButton';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '../ui/badge';
 
 export const Inquiries = () => {
 	const { user } = useUser();
@@ -28,8 +30,30 @@ export const Inquiries = () => {
 					{JSON.stringify(user.primaryEmailAddress.emailAddress)}
 					{inquiries.map(inquiry => (
 						<div className="p-2 m-2 border rounded" key={inquiry.id}>
+							<Card>
+								<CardHeader>
+									<CardTitle>
+										Slot {inquiry?.slot} of exhibition {inquiry.exhibition_id}
+									</CardTitle>
+									<CardDescription>Card Description</CardDescription>
+								</CardHeader>
+								<CardContent className="">
+									<ul className="w-full">
+										<li className="w-full">{inquiry?.email}</li>
+										<li className="w-full">
+											{inquiry?.first_name} {inquiry?.last_name}
+										</li>
+										<li className="w-full">{inquiry?.phone_no}</li>
+										<li className="w-full">{inquiry?.company}</li>
+									</ul>
+								</CardContent>
+								<CardFooter className="flex flex-col">
+									<Badge variant="">{inquiry?.status}</Badge>
+									<PaymentButton slot={inquiry.slot} exhibition_id={inquiry.exhibition_id} slot_id={inquiry.slot_id} />
+								</CardFooter>
+							</Card>
+
 							<p className="break-words">{JSON.stringify(inquiry)}</p>
-							<PaymentButton slot={inquiry.slot} exhibition_id={inquiry.exhibition_id} slot_id={inquiry.slot_id} />
 						</div>
 					))}
 				</div>

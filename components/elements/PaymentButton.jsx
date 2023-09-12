@@ -45,17 +45,14 @@ export const PaymentButton = ({ slot, exhibition_id, slot_id }) => {
 
 	return (
 		<>
-			<p className="break-words">{JSON.stringify(slotData)}</p>
-
+			{paymentIntent && order ? <StripePayment order={order} /> : null}
 			{!slotData?.booked && slotData?.direct_booking ? (
 				<Button onClick={() => setPaymentIntent(!paymentIntent)}>Pay now</Button>
 			) : (
 				<p className="p-2 w-fit">No updates yet, well notify you when the time comes</p>
 			)}
-
+			<p className="break-words">{JSON.stringify(slotData)}</p>
 			<p className="p-2 m-2 break-words border rounded">{JSON.stringify(order)}</p>
-
-			{paymentIntent && order ? <StripePayment order={order} /> : null}
 		</>
 	);
 };

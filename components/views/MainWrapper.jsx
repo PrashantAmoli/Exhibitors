@@ -16,7 +16,7 @@ const Navbar = ({ children }) => {
 	const router = useRouter();
 	const { pathname } = router;
 
-	if (pathname === '/demo' || pathname.includes('demo') || pathname.includes('embed') || pathname.includes('tests')) return <></>;
+	if (pathname === '/demo' || pathname.includes('demo') || pathname.includes('embed') || pathname.includes('tests')) return <>{children}</>;
 
 	return (
 		<>

@@ -1,11 +1,11 @@
-import Modal from '@/components/Modal';
-import { useToast } from '@/components/ui/use-toast';
 import * as React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
 import { supabase } from '@/utils/supabase';
+import { useToast } from '@/components/ui/use-toast';
 import BookingForm from '@/components/forms/BookingForm';
-import StripePayment from '@/components/forms/StripePayment';
+import Modal from '@/components/elements/Modal';
+import { toast } from 'sonner';
 
 export async function getServerSideProps(context) {
 	const { data: slotsData, bookingDataError } = await supabase.from('slots').select('*').eq('exhibition_id', '4');
@@ -27,8 +27,6 @@ const HBLFShows = ({ slotsData, exhibitionData }) => {
 	const [slot, setSlot] = React.useState(null);
 
 	// const [slotsData, setBookingData] = React.useState({ ...props?.slotsData });
-
-	const { toast } = useToast();
 
 	React.useEffect(() => {
 		const svg = document.querySelector('.SlotsGroup');
@@ -74,11 +72,10 @@ const HBLFShows = ({ slotsData, exhibitionData }) => {
 				});
 
 				if (slotData?.booked) {
-					console.log('Slot is booked');
-					toast({
-						title: 'Slot is booked',
-						description: 'Please select another slot',
-						variant: 'destructive',
+					console.log(`Slot ${slotId} is already booked`);
+					toast.message(`Slot ${slotId} is already booked`, {
+						description: `Please select another slot.
+						If you need any assistance, please contact support.`,
 					});
 				} else {
 					console.log('Slot is available');
@@ -671,7 +668,7 @@ export default function SVG2ReactPlugin({ slotsData = SlotsData, exhibitionData 
 		<>
 			<section className="flex justify-center w-full min-h-screen overflow-auto pt-9">
 				<Tabs defaultValue="booking" className="w-full">
-					<TabsList className="absolute w-full top-1">
+					<TabsList className="absolute w-full border top-1">
 						<TabsTrigger value="booking" className="w-full animate-pulse">
 							Booking
 						</TabsTrigger>
@@ -683,167 +680,14 @@ export default function SVG2ReactPlugin({ slotsData = SlotsData, exhibitionData 
 					<TabsContent value="booking" className="flex justify-center w-full">
 						<HBLFShows slotsData={slotsData} exhibitionData={exhibitionData} />
 					</TabsContent>
-					<TabsContent value="images" className="w-full">
-						{/* <Image src={'/next.svg'} alt={'next'} className="w-11/12 max-w-sm my-2" width={300} height={300} /> */}
 
-						<embed src="/HBLFShow.pdf" width="100%" height="100%" className="w-full min-h-screen " />
+					<TabsContent value="images" className="w-full">
+						<Image src={'/favicon.ico'} alt={'next'} className="w-11/12 max-w-sm mx-auto my-2" width={300} height={300} />
+
+						{/* <embed src="/HBLFShow.pdf" width="100%" height="100%" className="w-full min-h-screen " /> */}
 					</TabsContent>
 				</Tabs>
 			</section>
-			{/* <Wrapper /> */}
 		</>
 	);
 }
-
-const SlotsData = [
-	{
-		slot: '25',
-		status: 'available',
-		booked: true,
-	},
-	{
-		slot: '26',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '27',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '28',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '29',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '30',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '31',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '32',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '33',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '34',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '35',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '36',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '37',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '38',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '39',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '40',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '41',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '42',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '43',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '44',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '45',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '46',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '47',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '48',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '49',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '50',
-		status: 'available',
-		booked: false,
-	},
-	{
-		slot: '51',
-		status: 'available',
-		booked: true,
-	},
-	{
-		slot: '52',
-		status: 'available',
-		booked: true,
-	},
-	{
-		slot: '53',
-		status: 'available',
-		booked: true,
-	},
-	{
-		slot: '54',
-		status: 'available',
-		booked: true,
-	},
-];

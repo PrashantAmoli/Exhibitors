@@ -8,7 +8,7 @@ export const config = {
 	},
 };
 
-const updateSlotUsingOrder = async booked_by => {
+const updateSlotUsingOrder = async order => {
 	const { data: slotData, error: slotUpdateError } = await supabase
 		.from('slots')
 		.update({
@@ -25,7 +25,7 @@ const updateSlotUsingOrder = async booked_by => {
 };
 
 const updateOrderUsingTransaction = async transaction => {
-	const { error: orderUpdateError } = await supabase
+	const { data: orderData, error: orderUpdateError } = await supabase
 		.from('orders')
 		.update({
 			status: 'paid',
@@ -33,14 +33,15 @@ const updateOrderUsingTransaction = async transaction => {
 			paid_by: transaction?.user_id,
 			updated_at: new Date().toISOString(),
 		})
-		.eq('id', transaction?.order_id);
+		.eq('id', transaction?.order_id)
+		.select();
 
 	if (orderUpdateError) {
 		console.error('orderUpdateError', orderUpdateError);
 		return;
 	}
 
-	await updateSlotUsingOrder(transaction?.user_id);
+	await updateSlotUsingOrder(orderData[0]);
 };
 
 export default async function handler(req, res) {

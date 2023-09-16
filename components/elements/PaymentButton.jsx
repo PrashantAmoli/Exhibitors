@@ -2,6 +2,7 @@ import { supabase } from '@/utils/supabase';
 import { Button } from '../ui/button';
 import { useEffect, useState } from 'react';
 import StripePayment from '../forms/StripePayment';
+import { JSONData } from '@/components/elements/JSONData';
 
 export const PaymentButton = ({ slot, exhibition_id, slot_id }) => {
 	const [slotData, setSlotData] = useState(null);
@@ -45,14 +46,15 @@ export const PaymentButton = ({ slot, exhibition_id, slot_id }) => {
 
 	return (
 		<>
+			<div className="flex w-full gap-1 ">
+				<JSONData trigger="Slot Order" json={{ slotData: slotData, order: order }} />
+				{!slotData?.booked && slotData?.direct_booking ? (
+					<Button onClick={() => setPaymentIntent(!paymentIntent)}>Pay now</Button>
+				) : (
+					<p className="p-2 w-fit">No updates yet, well notify you when the time comes</p>
+				)}
+			</div>
 			{paymentIntent && order ? <StripePayment order={order} /> : null}
-			{!slotData?.booked && slotData?.direct_booking ? (
-				<Button onClick={() => setPaymentIntent(!paymentIntent)}>Pay now</Button>
-			) : (
-				<p className="p-2 w-fit">No updates yet, well notify you when the time comes</p>
-			)}
-			<p className="break-words">{JSON.stringify(slotData)}</p>
-			<p className="p-2 m-2 break-words border rounded">{JSON.stringify(order)}</p>
 		</>
 	);
 };

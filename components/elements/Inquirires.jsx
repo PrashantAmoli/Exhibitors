@@ -3,7 +3,8 @@ import { useUser } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
 import PaymentButton from './PaymentButton';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
+import { JSONData } from '@/components/elements/JSONData';
 
 export const Inquiries = () => {
 	const { user } = useUser();
@@ -27,7 +28,6 @@ export const Inquiries = () => {
 		<>
 			<section className="w-full mx-auto my-3 overflow-y-auto">
 				<div className="grid grid-cols-1 p-2">
-					{JSON.stringify(user.primaryEmailAddress.emailAddress)}
 					{inquiries.map(inquiry => (
 						<div className="p-2 m-2 border rounded" key={inquiry.id}>
 							<Card>
@@ -47,13 +47,13 @@ export const Inquiries = () => {
 										<li className="w-full">{inquiry?.company}</li>
 									</ul>
 								</CardContent>
-								<CardFooter className="flex flex-col">
+								<CardFooter className="flex flex-col gap-1">
 									<Badge variant="">{inquiry?.status}</Badge>
 									<PaymentButton slot={inquiry.slot} exhibition_id={inquiry.exhibition_id} slot_id={inquiry.slot_id} />
 								</CardFooter>
 							</Card>
 
-							<p className="break-words">{JSON.stringify(inquiry)}</p>
+							<JSONData trigger="Inquiry" json={inquiry} />
 						</div>
 					))}
 				</div>

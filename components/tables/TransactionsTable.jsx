@@ -58,7 +58,6 @@ export const TransactionsTable = ({ data = [] }) => {
 
 	return (
 		<div className="w-full">
-			<h2 className="text-center">Transactions Table</h2>
 			<QueryErrorResetBoundary>
 				<TransactionsTable1 data={transactions} />
 			</QueryErrorResetBoundary>

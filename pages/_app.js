@@ -3,20 +3,21 @@ import { queryClient } from '@/lib/ReactQuery';
 // import ClerkWrapper from '@/lib/ClerkWrapper';
 import '@/styles/globals.css';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 
 export default function App({ Component, pageProps }) {
 	return (
 		<>
-			<QueryClientProvider client={queryClient}>
-				{/* <ClerkWrapper> */}
-				<MainWrapper>
-					<Component {...pageProps} />
-				</MainWrapper>
-				{/* </ClerkWrapper> */}
+			<ThemeProvider attribute="class" enableSystem={false} defaultTheme="light">
+				<QueryClientProvider client={queryClient}>
+					<MainWrapper>
+						<Component {...pageProps} />
+					</MainWrapper>
+				</QueryClientProvider>
 
 				<Toaster position="bottom-center" closeButton />
-			</QueryClientProvider>
+			</ThemeProvider>
 		</>
 	);
 }

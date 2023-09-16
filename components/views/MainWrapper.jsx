@@ -23,7 +23,7 @@ const Navbar = ({ children }) => {
 			<nav className="relative inset-x-0 top-0 z-30 items-center justify-center hidden w-full shadow-xl dark:shadow-xl dark:shadow-blue-300/10 sm:flex backdrop-blur">
 				<div className="flex flex-row items-center justify-between w-full gap-1 px-2 mx-auto sm:gap-3 max-w-7xl h-14 ">
 					<Link href="/">
-						<h2 className="text-xl text-center lg:text-2xl font-SpaceX">EXPOBOOK</h2>
+						<h2 className="text-xl text-center uppercase lg:text-2xl font-SpaceX">Exhibitors</h2>
 					</Link>
 
 					{/* <DropdownMenuWrapper /> */}

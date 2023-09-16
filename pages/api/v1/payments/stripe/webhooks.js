@@ -14,7 +14,7 @@ const updateSlotUsingOrder = async order => {
 		.update({
 			status: 'booked',
 			booked: true,
-			booked_by: order?.paid_id,
+			booked_by: order?.paid_by,
 		})
 		.eq('id', order?.slot_id);
 

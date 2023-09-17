@@ -1,4 +1,5 @@
 import MainWrapper from '@/components/views/MainWrapper';
+import CrispChat from '@/lib/CrispChatWidget';
 import { queryClient } from '@/lib/ReactQuery';
 // import ClerkWrapper from '@/lib/ClerkWrapper';
 import '@/styles/globals.css';
@@ -17,6 +18,8 @@ export default function App({ Component, pageProps }) {
 				</QueryClientProvider>
 
 				<Toaster position="bottom-center" closeButton />
+
+				<CrispChat />
 			</ThemeProvider>
 		</>
 	);

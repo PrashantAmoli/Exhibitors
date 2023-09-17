@@ -684,9 +684,14 @@ export default function SVG2ReactPlugin({ slotsData = SlotsData, exhibitionData 
 					</TabsContent>
 
 					<TabsContent value="images" className="w-full">
-						<Image src={'/favicon.ico'} alt={'next'} className="w-11/12 max-w-sm mx-auto my-2" width={300} height={300} />
+						{/* <Image src={'/favicon.ico'} alt={'next'} className="w-11/12 max-w-sm mx-auto my-2" width={300} height={300} /> */}
 
-						{/* <embed src="/HBLFShow.pdf" width="100%" height="100%" className="w-full min-h-screen " /> */}
+						<embed
+							src="https://fvfigugygviykxnxjyfq.supabase.co/storage/v1/object/public/test/HBLFShow.pdf"
+							width="100%"
+							height="100%"
+							className="w-full h-[calc(100vh-52px)]"
+						/>
 					</TabsContent>
 				</Tabs>
 			</section>

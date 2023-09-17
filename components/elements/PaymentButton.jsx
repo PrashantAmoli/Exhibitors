@@ -3,11 +3,14 @@ import { Button } from '../ui/button';
 import { useEffect, useState } from 'react';
 import StripePayment from '../forms/StripePayment';
 import { JSONData } from '@/components/elements/JSONData';
+import Modal from './Modal';
+import { Badge } from '@/components/ui/badge';
 
 export const PaymentButton = ({ slot, exhibition_id, slot_id }) => {
 	const [slotData, setSlotData] = useState(null);
 	const [paymentIntent, setPaymentIntent] = useState(false);
 	const [order, setOrder] = useState(null);
+	const [modalOpen, setModalOpen] = useState(false);
 
 	useEffect(() => {
 		const getSlotData = async () => {
@@ -49,12 +52,19 @@ export const PaymentButton = ({ slot, exhibition_id, slot_id }) => {
 			<div className="flex w-full gap-1 ">
 				<JSONData trigger="Slot Order" json={{ slotData: slotData, order: order }} />
 				{!slotData?.booked && slotData?.direct_booking ? (
-					<Button onClick={() => setPaymentIntent(!paymentIntent)}>Pay now</Button>
+					<Button onClick={() => setModalOpen(true)}>Pay now</Button>
+				) : (
+					<Badge variant={slotData?.booked ? 'success' : 'outline'}>{slotData?.booked ? 'booked' : 'processing'}</Badge>
+				)}
+			</div>
+
+			<Modal modalOpen={modalOpen} setModalOpen={setModalOpen} title="Slot Order" className="sm:max-w-3xl">
+				{!slotData?.booked && slotData?.direct_booking && order ? (
+					<StripePayment order={order} />
 				) : (
 					<p className="p-2 w-fit">No updates yet, well notify you when the time comes</p>
 				)}
-			</div>
-			{paymentIntent && order ? <StripePayment order={order} /> : null}
+			</Modal>
 		</>
 	);
 };

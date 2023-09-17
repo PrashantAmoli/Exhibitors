@@ -27,37 +27,43 @@ export const Inquiries = () => {
 	return (
 		<>
 			<section className="w-full mx-auto my-3 overflow-y-auto">
-				<div className="grid grid-cols-1 p-2">
+				<div className="grid grid-cols-1 gap-3 p-2 sm:grid-cols-2 xl:grid-cols-3">
 					{inquiries.map(inquiry => (
-						<div className="p-2 m-2 border rounded" key={inquiry.id}>
-							<Card>
-								<CardHeader>
-									<CardTitle>
-										Slot {inquiry?.slot} of exhibition {inquiry.exhibition_id}
-									</CardTitle>
-									<CardDescription>Card Description</CardDescription>
-								</CardHeader>
-								<CardContent className="">
-									<ul className="w-full">
-										<li className="w-full">{inquiry?.email}</li>
-										<li className="w-full">
-											{inquiry?.first_name} {inquiry?.last_name}
-										</li>
-										<li className="w-full">{inquiry?.phone_no}</li>
-										<li className="w-full">{inquiry?.company}</li>
-									</ul>
-								</CardContent>
-								<CardFooter className="flex flex-col gap-1">
-									<Badge variant="">{inquiry?.status}</Badge>
-									<PaymentButton slot={inquiry.slot} exhibition_id={inquiry.exhibition_id} slot_id={inquiry.slot_id} />
-								</CardFooter>
-							</Card>
-
-							<JSONData trigger="Inquiry" json={inquiry} />
-						</div>
+						<InquiriesCard inquiry={inquiry} key={inquiry.id} />
 					))}
 				</div>
 			</section>
+		</>
+	);
+};
+
+export const InquiriesCard = ({ inquiry }) => {
+	return (
+		<>
+			<Card className="w-full">
+				<CardHeader>
+					<CardTitle>
+						Slot {inquiry?.slot} of exhibition {inquiry.exhibition_id}
+					</CardTitle>
+					<CardDescription>Card Description</CardDescription>
+				</CardHeader>
+				<CardContent className="">
+					<ul className="w-full">
+						<li className="w-full">{inquiry?.email}</li>
+						<li className="w-full">
+							{inquiry?.first_name} {inquiry?.last_name}
+						</li>
+						<li className="w-full">{inquiry?.phone_no}</li>
+						<li className="w-full">{inquiry?.company}</li>
+					</ul>
+
+					<JSONData trigger="Inquiry" json={inquiry} />
+				</CardContent>
+				<CardFooter className="flex flex-col gap-1">
+					<Badge variant="">{inquiry?.status}</Badge>
+					<PaymentButton slot={inquiry.slot} exhibition_id={inquiry.exhibition_id} slot_id={inquiry.slot_id} />
+				</CardFooter>
+			</Card>
 		</>
 	);
 };

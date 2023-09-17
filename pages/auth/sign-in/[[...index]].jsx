@@ -11,9 +11,7 @@ export default function SignInPage() {
 			<main className="fixed flex items-center justify-center w-full min-h-screen p-2">
 				<SignIn
 					appearance={{
-						elements: {
-							footerAction__signIn: 'hidden',
-						},
+						elements: {},
 					}}
 				/>
 			</main>

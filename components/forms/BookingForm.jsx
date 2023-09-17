@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { supabase } from '@/utils/supabase';
 import { toast } from 'sonner';
+import { SignIn, SignUp, useAuth } from '@clerk/nextjs';
+import { JSONData } from '../elements/JSONData';
+import Link from 'next/link';
 
 export const BookingForm = ({ slot, exhibitionData, slotsData }) => {
+	const authData = useAuth();
+
 	const [formData, setFormData] = useState({
 		slot: slot,
 		first_name: '',
@@ -20,6 +25,7 @@ export const BookingForm = ({ slot, exhibitionData, slotsData }) => {
 		state: '',
 	});
 	const [required, setRequired] = useState(false);
+	const [submitted, setSubmitted] = useState(false);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -141,12 +147,9 @@ export const BookingForm = ({ slot, exhibitionData, slotsData }) => {
 			} else {
 				toast.success(`Submission Successful`, {
 					description: `Your inquiry has been submitted successfully.
-						Please check your email for further instructions or head over to ${(
-							<a href="htps://easemyexpo.com" target="_blank">
-								easemyexpo.com
-							</a>
-						)}.`,
+						Please check your email for further instructions or head over to easemyexpo.com.`,
 				});
+				setSubmitted(true);
 			}
 		} else {
 			const res = await supabase.from('inquiries').insert(submission);
@@ -158,15 +161,41 @@ export const BookingForm = ({ slot, exhibitionData, slotsData }) => {
 			} else {
 				toast.success(`Submission Successful`, {
 					description: `Your inquiry has been submitted successfully.
-						Please check your email for further instructions or head over to ${(
-							<a href="htps://easemyexpo.com" target="_blank">
-								easemyexpo.com
-							</a>
-						)}.`,
+						Please check your email for further instructions or head over to easemyexpo.com.`,
 				});
+				setSubmitted(true);
 			}
 		}
 	};
+
+	useEffect(() => {
+		if (typeof window !== 'undefined' && submitted) {
+			setTimeout(() => {
+				// redirect to /auth/sign-in in a new tab
+				window.open('/auth/sign-in', '_blank');
+			}, 5000);
+		}
+	}, [submitted]);
+
+	if (submitted)
+		return (
+			<>
+				{authData?.isSignedIn ? (
+					<Link href="/" target="_blank" className="flex items-center justify-center w-full mx-auto">
+						<Button variant="outline" className="mx-auto animate-pulse" size="lg">
+							Continue on EaseMyExpo
+						</Button>
+					</Link>
+				) : (
+					<>
+						<section className="mx-auto w-fit">
+							<SignIn className="" />
+						</section>
+					</>
+				)}
+				<JSONData trigger="Auth" json={authData} />
+			</>
+		);
 
 	return (
 		<>

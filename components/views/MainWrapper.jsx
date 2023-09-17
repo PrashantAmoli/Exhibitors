@@ -5,6 +5,7 @@ import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, SignInButton, Sig
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
+import { dark } from '@clerk/themes';
 // import DropdownMenuWrapper from '../DropdownMenuWrapper';
 
 const publicPages = ['/', '/sign-in/[[...index]]', '/sign-up/[[...index]]', '/admin', '/admin/orders', '/admin/users', '/embed', '/demo', '/tests'];
@@ -20,7 +21,7 @@ const Navbar = ({ children }) => {
 
 	return (
 		<>
-			<nav className="relative inset-x-0 top-0 z-30 items-center justify-center hidden w-full shadow-xl dark:shadow-xl dark:shadow-blue-300/10 sm:flex backdrop-blur">
+			<nav className="relative inset-x-0 top-0 z-10 items-center justify-center hidden w-full shadow-xl dark:shadow-xl dark:shadow-blue-300/10 sm:flex backdrop-blur">
 				<div className="flex flex-row items-center justify-between w-full gap-1 px-2 mx-auto sm:gap-3 max-w-7xl h-14 ">
 					<Link href="/">
 						<h2 className="text-xl text-center uppercase lg:text-2xl font-SpaceX">Exhibitors</h2>
@@ -72,9 +73,13 @@ export default function MainWrapper({ children }) {
 	const { pathname } = useRouter();
 
 	const isPublicPage = publicPages.includes(pathname);
-
+	const { theme, setTheme } = useTheme();
 	return (
-		<ClerkProvider>
+		<ClerkProvider
+			appearance={{
+				baseTheme: theme === 'dark' ? dark : '',
+			}}
+		>
 			<Navbar>
 				{isPublicPage ? (
 					<>{children}</>

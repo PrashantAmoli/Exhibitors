@@ -30,16 +30,12 @@ export const Bookings = () => {
 
 	return (
 		<>
-			<h1 className="text-xl uppercase font-SpaceX">Bookings</h1>
-			<JSONData trigger="Bookings" json={bookings} />
+			<div className="flex">
+				<h1 className="text-xl uppercase font-SpaceX">Bookings</h1>
+				<JSONData trigger="Bookings" json={bookings} />
+			</div>
 
 			<section className="grid w-full grid-cols-1 gap-4 p-1 mx-auto my-3 max-w-7xl sm:grid-cols-2 xl:grid-cols-3">
-				{bookings?.map(booking => (
-					<BookingsCard booking={booking} key={booking.id} />
-				))}
-				{bookings?.map(booking => (
-					<BookingsCard booking={booking} key={booking.id} />
-				))}
 				{bookings?.map(booking => (
 					<BookingsCard booking={booking} key={booking.id} />
 				))}
